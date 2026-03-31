@@ -27,14 +27,15 @@ def generate_signal():
     pair = random.choice(pairs)
     direction = random.choice(directions)
 
-    now = datetime.now()
-    prep_time = now + timedelta(seconds=30)
-    entry_time = now + timedelta(seconds=60)
+    now = datetime.utcnow() + timedelta(hours=2)  # SAT time
+    entry_time = now + timedelta(seconds=30)  # prep time
+
+    time_str = entry_time.strftime("%H:%M:%S")
 
     message = f"""📊 {pair}
 Signal: {direction}
-Prep time: {prep_time.strftime('%H:%M:%S')}
-Entry time: {entry_time.strftime('%H:%M:%S')}
+Prep time: 30 seconds ⏳
+Entry time (SAT): {time_str}
 Expiry: 2 candles"""
 
     return message
@@ -42,8 +43,10 @@ Expiry: 2 candles"""
 def main():
     global CHAT_ID
     offset = None
+    last_signal_time = 0
 
     while True:
+        # Capture user chat ID
         updates = get_updates(offset)
 
         if "result" in updates:
@@ -53,12 +56,17 @@ def main():
                 if "message" in update:
                     CHAT_ID = update["message"]["chat"]["id"]
 
+        # Send signal every 60 seconds
         if CHAT_ID:
-            signal = generate_signal()
-            send_message(CHAT_ID, signal)
-            time.sleep(60)
+            current_time = time.time()
+            if current_time - last_signal_time >= 60:
+                signal = generate_signal()
+                send_message(CHAT_ID, signal)
+                last_signal_time = current_time
 
         time.sleep(2)
 
 if __name__ == "__main__":
     main()
+
+

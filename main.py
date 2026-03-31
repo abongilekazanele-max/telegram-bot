@@ -1,6 +1,7 @@
 import requests
 import time
 import os
+import random
 from datetime import datetime, timedelta
 
 TOKEN = os.getenv("TOKEN")
@@ -19,7 +20,7 @@ def get_updates(offset=None):
     response = requests.get(url, params=params)
     return response.json()
 
-# 🔥 Get real market data
+# 🔥 Get price from Binance
 def get_price(symbol):
     try:
         url = f"https://api.binance.com/api/v3/ticker/price?symbol={symbol}"
@@ -32,11 +33,11 @@ def generate_signal():
     pairs = {
         "EUR/USD": "EURUSDT",
         "GBP/USD": "GBPUSDT",
-        "USD/JPY": "JPYUSDT",
         "AUD/USD": "AUDUSDT"
     }
 
-    pair_name, symbol = list(pairs.items())[0]
+    pair_name = random.choice(list(pairs.keys()))
+    symbol = pairs[pair_name]
 
     price1 = get_price(symbol)
     time.sleep(1)
@@ -45,8 +46,10 @@ def generate_signal():
     if price1 and price2:
         if price2 > price1:
             direction = "BUY ⬆️"
-        else:
+        elif price2 < price1:
             direction = "SELL ⬇️"
+        else:
+            direction = "WAIT ⚠️"
     else:
         direction = "WAIT ⚠️"
 
@@ -78,11 +81,10 @@ def main():
                     CHAT_ID = update["message"]["chat"]["id"]
 
         if CHAT_ID:
-            current_time = time.time()
-            if current_time - last_signal_time >= 60:
+            if time.time() - last_signal_time >= 60:
                 signal = generate_signal()
                 send_message(CHAT_ID, signal)
-                last_signal_time = current_time
+                last_signal_time = time.time()
 
         time.sleep(2)
 

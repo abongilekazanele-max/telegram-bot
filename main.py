@@ -71,3 +71,4 @@ while True:
     except Exception as e:
         print("Error:", e)
         time.sleep(30)
+send_signal("BOT IS LIVE 🚀")

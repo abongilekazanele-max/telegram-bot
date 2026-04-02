@@ -6,7 +6,8 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 
 def send_signal(signal):
-    url=f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+url=
+f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     message = f"📊 EUR/USD\n\n🔥 Signal: {signal}\n⏰ Expiry: 2 minutes"
 
     requests.post(url, data={
@@ -15,7 +16,7 @@ def send_signal(signal):
     })
 
 def get_prices():
-    url = "https://api.binance.com/api/v3/klines?symbol=EURUSDT&interval=1m&limit=20"
+ url = "https://api.binance.com/api/v3/klines?symbol=EURUSDT&interval=1m&limit=20"
     data = requests.get(url).json()
     closes = [float(candle[4]) for candle in data]
     return closes

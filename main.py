@@ -7,7 +7,9 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 
 def send_signal(signal):
-    url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    url=
+f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+
     message = f"📊 EUR/USD\n\n🔥 Signal: {signal}\n⏰ Expiry: 2 minutes"
 
     requests.post(url, data={
@@ -22,26 +24,22 @@ def get_price():
 
 print("Bot started...")
 
+# ✅ TEST MESSAGE (you can remove later)
+send_signal("TEST 🚀")
+
 while True:
     try:
         price1 = get_price()
-        time.sleep(5)
+        time.sleep(60)
         price2 = get_price()
 
-        movement = abs(price2 - price1)
-
-        if movement < 0.00005:
-            direction = random.choice(["BUY ⬆️", "SELL ⬇️"])
+        if price2 > price1:
+            send_signal("BUY 📈")
         else:
-            if price2 > price1:
-                direction = "BUY ⬆️"
-            else:
-                direction = "SELL ⬇️"
-
-        send_signal(direction)
+            send_signal("SELL 📉")
 
         time.sleep(120)
 
     except Exception as e:
         print("Error:", e)
-        time.sleep(10)
+        time.sleep(60)

@@ -7,8 +7,7 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 
 def send_signal(signal):
-    url=
-f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
+    url=f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
 
     message = f"📊 EUR/USD\n\n🔥 Signal: {signal}\n⏰ Expiry: 2 minutes"
 
@@ -43,3 +42,4 @@ while True:
     except Exception as e:
         print("Error:", e)
         time.sleep(60)
+send_signal("TEST 🚀")
